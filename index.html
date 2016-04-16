@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visualization of Infections in different districts of Nepal</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Visualization of Infections in different districts of Nepal">
+  <meta name="author" content="Sudha Bhandari">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Visualization of Infections in different districts of Nepal</h1>
+    <h2>Using ggplot visualization to view the number of poeple infected with Communicable and Infectious Disease in Nepal</h2>
+    <p>Sudha Bhandari<br/>Data Enthusiast</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Infections data</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Nepal is country with 75 districts and varying health care facilities among this districts. Every year, there are huge number of people infected with communicable and infectious diseases in various districts of Nepal. I have created a shiny application <a href="https://sudha.shinyapps.io/Sudha/">Infections data Visualization</a>  to present the data as visualization and presenting my idea in this presentation. I downloaded the data from <a href="http://data.opennepal.net/">Open Data Nepal </a></p>
+
+<pre><code class="r">infections &lt;- read.csv(&quot;infections.csv&quot;)
+nrow(infections)
+</code></pre>
+
+<pre><code>## [1] 2980
+</code></pre>
+
+<pre><code class="r">names(infections)
+</code></pre>
+
+<pre><code>## [1] &quot;Year&quot;                               
+## [2] &quot;District&quot;                           
+## [3] &quot;Communicable.and.infectious.disease&quot;
+## [4] &quot;Number.of.people&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Data Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">infections$Year &lt;- sapply(strsplit(as.character(infections$Year), &quot;/&quot;),&quot;[[&quot;,1)
+infections$Year &lt;- as.factor(infections$Year)
+infections$District &lt;- as.factor(infections$District)
+infections$Number.of.people &lt;- as.numeric(infections$Number.of.people)
+infections$Communicable.and.infectious.disease &lt;- as.factor(infections$Communicable.and.infectious.disease)
+names(infections) &lt;- c(&quot;Year&quot;,&quot;District&quot;,&quot;Disease&quot;,&quot;Number.of.people&quot;)
+head(infections)
+</code></pre>
+
+<pre><code>##   Year District                                Disease Number.of.people
+## 1 2009  Bhojpur ARI /Lower respiratory tract infection            13490
+## 2 2009  Bhojpur      Upper respiratory Tract infection             5992
+## 3 2009  Bhojpur                              Pneumonia             6910
+## 4 2009  Bhojpur                       Server Pneumonia              242
+## 5 2009  Bhojpur                             Bronchitis             3191
+## 6 2009  Bhojpur                                 Asthma             3118
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id2" style="background:;">
+  <hgroup>
+    <h2>Data Visualization of infections in 2009</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">dataset &lt;- subset(infections, Year = 2009)
+aggregated_data &lt;- aggregate(Number.of.people ~ District, data = dataset, FUN = sum)
+top_25_data &lt;- aggregated_data[order(-aggregated_data$Number.of.people),][1:25,]
+top_25_data$District &lt;- factor(top_25_data$District, levels = top_25_data$District)
+head(top_25_data)
+</code></pre>
+
+<pre><code>##     District Number.of.people
+## 43    Morang           451859
+## 28     Jhapa           448791
+## 67    Siraha           433504
+## 19  Dhanusha           408700
+## 69   Sunsari           401130
+## 35 Kathmandu           398205
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id3" style="background:;">
+  <hgroup>
+    <h2>Data Visualization output</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="Rplot.png" alt="Plot">
+This flow is made dynamic to be drived with the district and year selected by user. </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Infections data'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Data Preprocessing'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Data Visualization of infections in 2009'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Data Visualization output'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

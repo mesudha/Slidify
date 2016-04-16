@@ -1,0 +1,57 @@
+---
+title: "Visualization of Infections in different districts of Nepal"
+author: "Sudha Bhandari"
+highlighter: highlight.js
+output: md_document
+job: Data Enthusiast
+knit: slidify::knit2slides
+mode: selfcontained
+hitheme: tomorrow
+subtitle: Using ggplot visualization to view the number of poeple infected with Communicable
+  and Infectious Disease in Nepal
+framework: io2012
+widgets: []
+---
+
+## Infections data
+Nepal is country with 75 districts and varying health care facilities among this districts. Every year, there are huge number of people infected with communicable and infectious diseases in various districts of Nepal. I have created a shiny application [Infections data Visualization](https://sudha.shinyapps.io/Sudha/)  to present the data as visualization and presenting my idea in this presentation. I downloaded the data from [Open Data Nepal ](http://data.opennepal.net/)
+
+```{r cache=TRUE}
+infections <- read.csv("infections.csv")
+nrow(infections)
+names(infections)
+```
+
+
+--- .class #id 
+
+## Data Preprocessing
+```{r echo=FALSE, results="hide"}
+suppressPackageStartupMessages(library(ggplot2))
+```
+
+```{r}
+infections$Year <- sapply(strsplit(as.character(infections$Year), "/"),"[[",1)
+infections$Year <- as.factor(infections$Year)
+infections$District <- as.factor(infections$District)
+infections$Number.of.people <- as.numeric(infections$Number.of.people)
+infections$Communicable.and.infectious.disease <- as.factor(infections$Communicable.and.infectious.disease)
+names(infections) <- c("Year","District","Disease","Number.of.people")
+head(infections)
+```
+
+--- .class #id2
+
+## Data Visualization of infections in 2009
+```{r}
+dataset <- subset(infections, Year = 2009)
+aggregated_data <- aggregate(Number.of.people ~ District, data = dataset, FUN = sum)
+top_25_data <- aggregated_data[order(-aggregated_data$Number.of.people),][1:25,]
+top_25_data$District <- factor(top_25_data$District, levels = top_25_data$District)
+head(top_25_data)
+```
+
+--- .class #id3
+
+## Data Visualization output
+![Plot](Rplot.png)
